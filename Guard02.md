@@ -314,7 +314,7 @@ graph TD
         M6[Uptime Monitoring & Heartbeats]
         M7[Fee Incentives for Participation]
         M8[Berachain PoL Security]
-        M9[User Responsibility (Wallet Backup)]
+        M9["User Responsibility (Wallet Backup)"]
     end
 
     subgraph Assumptions
