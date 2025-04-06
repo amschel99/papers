@@ -271,7 +271,7 @@ _Concept:_ A step-by-step flowchart for becoming and operating as a Guardian.
 ```mermaid
 graph TD
     Start --> A[1. Acquire $GUARD & $BERA Tokens];
-    A --> B[2. Provide Liquidity (e.g., GUARD/BERA on DEX)];
+    A --> B["2. Provide Liquidity (e.g., GUARD/BERA on DEX)"];
     B --> C[3. Obtain LP Tokens];
     C --> D[4. Access Guard Protocol Interface];
     D --> E[5. Stake LP Tokens via StakingContract];
@@ -297,19 +297,19 @@ _Concept:_ Diagram illustrating potential threats and the corresponding mitigati
 ```mermaid
 graph TD
     subgraph Threats
-        T1[Guardian Collusion (Fraudulent Recovery)]
-        T2[Guardian Censorship (Ignoring Requests)]
-        T3[Guardian Liveness Failure (Going Offline)]
-        T4[Sybil Attack (One Entity posing as many Guardians)]
+        T1["Guardian Collusion (Fraudulent Recovery)"]
+        T2["Guardian Censorship (Ignoring Requests)"]
+        T3["Guardian Liveness Failure (Going Offline)"]
+        T4["Sybil Attack (One Entity posing as many Guardians)"]
         T5[Direct Key Theft from Guardian]
-        T6[User Losing Access to Wallet (Unable to Initiate)]
+        T6["User Losing Access to Wallet (Unable to Initiate)"]
     end
 
     subgraph Mitigations
-        M1[Threshold Signature (M-of-N)]
+        M1["Threshold Signature (M-of-N)"]
         M2[Encrypted Shares]
-        M3[Significant Economic Stake ($GUARD/LP)]
-        M4[Slashing Penalties (Severe)]
+        M3["Significant Economic Stake ($GUARD/LP)"]
+        M4["Slashing Penalties (Severe)"]
         M5[Challenge Period]
         M6[Uptime Monitoring & Heartbeats]
         M7[Fee Incentives for Participation]
@@ -319,8 +319,8 @@ graph TD
 
     subgraph Assumptions
         A1[Berachain Network Security]
-        A2[Rational Economic Actors (Guardians)]
-        A3[Cryptography Strength (SSS, Encryption)]
+        A2["Rational Economic Actors (Guardians)"]
+        A3["Cryptography Strength (SSS, Encryption)"]
         A4[Smart Contract Code Correctness]
     end
 
