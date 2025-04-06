@@ -270,16 +270,16 @@ _Concept:_ A step-by-step flowchart for becoming and operating as a Guardian.
 
 ```mermaid
 graph TD
-    Start --> A[1. Acquire $GUARD & $BERA Tokens];
+    Start --> A["1. Acquire GUARD & BERA Tokens"];
     A --> B["2. Provide Liquidity (e.g., GUARD/BERA on DEX)"];
-    B --> C[3. Obtain LP Tokens];
-    C --> D[4. Access Guard Protocol Interface];
-    D --> E[5. Stake LP Tokens via StakingContract];
-    E -- Stake Confirmed --> F[6. Set up & Run Guardian Node Software];
-    F --> G{7. Maintain Node Uptime & Connectivity};
-    G -- Heartbeats Sent --> H[8. Monitor for Recovery Requests];
-    H -- Recovery Request Received --> I[9. Participate: Decrypt Share & Submit];
-    I -- Recovery Successful --> J[10. Claim $GUARD Fees & BGT Rewards];
+    B --> C["3. Obtain LP Tokens"];
+    C --> D["4. Access Guard Protocol Interface"];
+    D --> E["5. Stake LP Tokens via StakingContract"];
+    E -- Stake Confirmed --> F["6. Set up & Run Guardian Node Software"];
+    F --> G{"7. Maintain Node Uptime & Connectivity"};
+    G -- Heartbeats Sent --> H["8. Monitor for Recovery Requests"];
+    H -- Recovery Request Received --> I["9. Participate: Decrypt Share & Submit"];
+    I -- Recovery Successful --> J["10. Claim GUARD Fees & BGT Rewards"];
     J --> G;
     G -- Downtime/Failure --> K(Risk Slashing);
     K --> G;
