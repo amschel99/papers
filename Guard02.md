@@ -56,13 +56,13 @@ _(Note: Fees are illustrative and subject to governance adjustment)._
 
 ### 3.3 Guardian Economics: Why Participate?
 
-Guardians are permissionless entities who stake collateral ($GUARD or $GUARD LP tokens) to secure the network and provide the recovery service. They earn revenue through multiple streams:
+Guardians are permissionless entities who stake collateral ($GUARD or $GUARD LP tokens) via the protocol's smart contracts to secure the recovery network. They do not need to run specialized node software, instead interacting via a compatible wallet and the Guard Protocol interface/dApp. Their primary responsibilities are to remain responsive to recovery requests and participate honestly in the signing/approval process. They earn revenue through multiple streams:
 
-1.  **$GUARD Recovery Fees:** Direct payment for participating in successful recoveries (70% fee share).
-2.  **Berachain BGT Rewards:** By staking $GUARD/BERA LP tokens (or similar) into Berachain's PoL vaults, Guardians earn BGT emissions, convertible to BERA, aligning them directly with securing the underlying Berachain network.
+1.  **$GUARD Recovery Fees:** Direct payment for participating in successful recoveries (70% fee share), distributed proportionally to stake involved in the recovery quorum.
+2.  **Berachain BGT Rewards:** By staking $GUARD/BERA LP tokens (or similar) into Berachain's PoL vaults, Guardians earn BGT emissions, convertible to BERA. This directly aligns them with securing the underlying Berachain network and provides a foundational yield.
 3.  **DEX Trading Fees:** Earned from providing liquidity for $GUARD pairs.
 
-**Guardian ROI depends on:** Stake size, $GUARD price, recovery volume, BGT emission rates, and DEX volume. The multi-faceted reward structure aims to provide attractive returns even during initial low-usage phases, supplemented heavily by PoL incentives. Reliability and uptime are crucial, enforced via smart contracts and slashing conditions.
+**Guardian ROI depends on:** Stake size, $GUARD price, recovery volume, BGT emission rates, and DEX volume. The multi-faceted reward structure, particularly the integration with PoL, aims to provide attractive returns. Responsiveness and honest participation in recovery signing are crucial, enforced via smart contracts and slashing conditions tied to their staked collateral.
 
 ### 3.4 Validator Economics: Why Include Recoveries?
 
@@ -82,27 +82,34 @@ Guard Protocol offers a decentralized, censorship-resistant alternative at a com
 
 ### 4.1 Slashing Conditions: Enforcing Honesty & Reliability
 
-Significant economic penalties deter misbehavior:
+Significant economic penalties tied to staked collateral deter misbehavior:
 
-- **Prolonged Downtime/Missed Heartbeats:** Gradual slashing of staked collateral.
-- **Failure to Participate in Valid Recovery:** Moderate slashing of stake.
-- **Attempting to Approve Fraudulent Recovery (Detected via Challenge):** Severe slashing (e.g., 50-100%) of staked collateral.
+- **Failure to Participate in Recovery Window:** Repeated failure to respond to valid recovery requests within the designated timeframe leads to gradual slashing of staked collateral.
+- **Failure to Participate Correctly in Valid Recovery:** Submitting invalid signatures or failing cryptographic checks during a recovery process results in moderate slashing of stake.
+- **Attempting to Approve Fraudulent Recovery (Detected via Challenge):** Signing approval for a recovery attempt identified as fraudulent during the challenge period leads to severe slashing (e.g., 50-100%) of staked collateral.
 
-Slashing leverages the staked $GUARD or LP tokens, providing a direct economic incentive for guardians to remain online, responsive, and honest.
+Slashing leverages the staked $GUARD or LP tokens, providing a direct economic incentive for guardians to remain responsive, diligent, and honest.
 
 ### 4.2 Collusion Resistance & Liveness
 
 Guard Protocol employs multiple layers to mitigate collusion and ensure service availability:
 
 - **Encryption:** Key shares are encrypted, preventing guardians from accessing the underlying key directly.
-- **Threshold Requirement (M-of-N):** Requiring a subset (M) of the total (N) guardians ensures redundancy. (e.g., 3-of-5, or potentially over-sharded like 3-of-7 to improve liveness).
-- **Challenge Period:** Recovery requests trigger a time-locked "challenge period" where the user (or potentially other guardians, if sophisticated fraud detection is implemented) can cryptographically dispute a fraudulent attempt before execution, triggering slashing for malicious actors.
+- **Threshold Requirement (M-of-N):** Requiring a quorum (M) of the total (N) staked guardians ensures redundancy for recovery approvals.
+- **Challenge Period:** Recovery requests trigger a time-locked "challenge period" where the user can cryptographically dispute a fraudulent attempt before execution, triggering slashing for malicious actors.
 - **Economic Disincentives:** The potential loss of significant staked capital via slashing outweighs the potential gains from most forms of collusion or fraud.
-- **Guardian Uptime Monitoring:** Smart contracts monitor guardian responsiveness (e.g., heartbeats), linking uptime directly to rewards and slashing conditions.
+- **Guardian Responsiveness Monitoring:** Smart contracts monitor guardian participation in recovery signing events. Consistent failure to respond within designated time windows impacts rewards and can lead to slashing, ensuring guardians remain actively engaged.
 
 ### 4.3 Guardian Quality & Onboarding
 
-The protocol relies primarily on **economic incentives** rather than centralized vetting. Any entity can become a guardian by meeting the minimum stake requirement. The high collateral and risk of slashing serve as the primary filter, ensuring only participants with significant economic commitment participate, strongly incentivizing reliability and honest behavior.
+The protocol relies primarily on **economic incentives** rather than centralized vetting. Any entity can become a guardian by:
+
+1. Acquiring the necessary tokens ($GUARD, $BERA).
+2. Providing liquidity and obtaining the required LP token (e.g., $GUARD/BERA LP).
+3. Staking the LP token via the Guard Protocol's `StakingContract`.
+4. Using a compatible wallet and interface to monitor and respond to recovery requests.
+
+No specialized hardware or complex node setup is required. The high collateral requirement and the risk of slashing serve as the primary filters, ensuring only participants with significant economic commitment participate, strongly incentivizing reliability and honest behavior during the signing process.
 
 ## 5. Bootstrapping & Go-To-Market
 
@@ -273,22 +280,23 @@ graph TD
     Start --> A["Acquire GUARD & BERA Tokens"];
     A --> B["Provide Liquidity (e.g., GUARD/BERA on DEX)"];
     B --> C["Obtain LP Tokens"];
-    C --> D["Access Guard Protocol Interface"];
+    C --> D["Access Guard Protocol Interface/dApp"];
     D --> E["Stake LP Tokens via StakingContract"];
-    E -- Stake Confirmed --> F["Set up & Run Guardian Node Software"];
-    F --> G{"Maintain Node Uptime & Connectivity"};
-    G -- Heartbeats Sent --> H["Monitor for Recovery Requests"];
-    H -- Recovery Request Received --> I["Participate: Decrypt Share & Submit"];
-    I -- Recovery Successful --> J["Claim GUARD Fees & BGT Rewards"];
-    J --> G;
-    G -- Downtime/Failure --> K(Risk Slashing);
-    K --> G;
+    E -- Stake Confirmed --> F{"Monitor On-chain Recovery Requests (via dApp/Notifications)"};
+    F -- Recovery Request Received --> G["Verify Request Details"];
+    G -- Valid Request --> H["Sign/Approve Recovery via Wallet (Weighted by Stake)"];
+    H -- Approval Submitted --> I["Claim GUARD Fees & BGT Rewards (Post-Recovery)"];
+    I --> F;
+    F -- Ignore/Fail to Respond --> K(Risk Slashing for Non-Participation);
+    K --> F;
+    G -- Invalid/Fraudulent Request --> L(Do Nothing / Flag);
+    L --> F;
 
     style F stroke-width:2px
-    style G stroke-width:2px
+    style H stroke-width:2px
 ```
 
-_Description:_ Shows the lifecycle: acquiring tokens, providing liquidity, staking, running the node, maintaining uptime, participating in recoveries, and claiming rewards, while noting the risk of slashing for failures.
+_Description:_ Shows the lifecycle for Guardians: acquiring tokens, providing liquidity, staking LP tokens, monitoring recovery requests via a dApp, verifying requests, signing approvals with their staked wallet, and claiming rewards, while noting the risk of slashing for non-participation.
 
 ### A4: Formal Security Model & Assumptions
 
