@@ -1,0 +1,110 @@
+# Cross-Chain Liquidity Sync Protocol
+
+A scalable, gasless, cross-chain asset swap mechanism leveraging decentralized liquidity contracts, off-chain relayers, and on-chain rewards.
+
+---
+
+## Overview
+
+This protocol enables users to swap tokens across chains without requiring canonical bridges or centralized liquidity pools. It leverages a decentralized off-chain relayer network and Berachain incentives to ensure a sustainable and liquid cross-chain ecosystem.
+
+---
+
+## Motivation
+
+- Traditional bridges are risky, centralized, and often slow.
+- Existing cross-chain protocols like Stargate lack support for key tokens (e.g., USDT).
+- Protocol liquidity is shallow without millions in pooled capital.
+- Need for gasless UX via permit-based token transfers.
+
+---
+
+## Key Components
+
+### 1. **Liquidity Contracts on Each Chain**
+Each supported chain (e.g., Polygon, Berachain, Arbitrum) has a smart contract that:
+- Accepts native tokens (e.g., USDC on Polygon).
+- Issues receipt tokens to liquidity providers (LPs).
+- Acts as a vault for cross-chain swaps.
+
+### 2. **Ledger Contract (On Berachain)**
+- Tracks total liquidity held across all chains.
+- Updates balances upon swaps or new LP deposits.
+- Acts as the source of truth for off-chain relayers and dApps.
+
+### 3. **Off-Chain Decentralized Relayer Network**
+- P2P off-chain infrastructure (not hosted on AWS).
+- Listens for swap events on source chains.
+- Triggers destination chain contract to release tokens to users.
+- Updates the ledger contract with new balances.
+
+*Technologies*: WebSockets, libp2p, or Waku.
+
+### 4. **Rewards Vault (Berachain)**
+- Receives BGT emissions from a Berachain validator.
+- Distributes BGT to stakers of receipt tokens.
+- Aligns LP incentives with network health.
+
+### 5. **LP Staking & Incentives**
+- Users stake receipt tokens to earn BGT rewards.
+- Staked LP tokens cannot be withdrawn immediately, adding liquidity stability.
+- Reward shares proportional to staked amount and duration.
+
+---
+
+## Swap Flow
+
+1. User initiates a token swap on **Chain A** using a `permit()` signature or meta-transaction.
+2. Tokens are transferred to the Chain A liquidity contract.
+3. Off-chain relayer detects the event and notifies **Chain B** contract.
+4. Chain B contract sends the equivalent token to the user's address.
+5. Ledger contract is updated with new balances.
+
+---
+
+## Gasless UX
+
+- `permit()` (EIP-2612) allows users to approve + transfer in a single tx.
+- Meta-tx relayers support fallback when tokens (like USDT) don’t support `permit()`.
+- Future integration: Account abstraction for seamless flow.
+
+---
+
+## Security Considerations
+
+- **Timeout Refunds**: If destination transfer fails, users can reclaim funds after delay.
+- **Slashing System**: Relayers that misbehave can be slashed in future iterations.
+- **Fraud Proofs**: ZK or Merkle proof systems to validate ledger updates off-chain.
+
+---
+
+## Future Extensions
+
+- zk-validatable liquidity state updates
+- DAO-controlled relayer registry
+- Integration with EigenLayer AVSs for decentralized execution
+
+---
+
+## Benefits
+
+- No bridge needed
+- Gasless UX
+- Scalable to many chains
+- Decentralized liquidity provisioning
+- Aligns LP incentives via BGT rewards
+- Potential for community-run relayer nodes
+
+---
+
+## Summary
+
+This protocol introduces a decentralized and scalable alternative to cross-chain liquidity bridging by combining:
+
+- Native liquidity vaults per chain
+- A central ledger on Berachain
+- Off-chain P2P relayers
+- Gasless user flows
+- BGT-based staking incentives
+
+It’s the future of seamless cross-chain DeFi.
